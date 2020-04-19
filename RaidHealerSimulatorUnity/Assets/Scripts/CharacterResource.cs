@@ -26,6 +26,10 @@ public class CharacterResource
 
 	public void Tick()
 	{
+		if (CurrentValue == 0)
+		{
+			return;
+		}
 		if (currentDelay > 0)
 		{
 			currentDelay--;
@@ -49,6 +53,11 @@ public class CharacterResource
 
 	public void ReduceValue(Character dealer, int amount)
 	{
+		if (CurrentValue == 0)
+		{
+			return;
+		}
+
 		currentValue -= amount;
 		if (currentValue <= 0)
 		{

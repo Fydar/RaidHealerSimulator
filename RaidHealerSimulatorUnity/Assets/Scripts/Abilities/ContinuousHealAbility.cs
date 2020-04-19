@@ -25,7 +25,10 @@ public class ContinuousHealAbility : BasicBeamAbility
 		{
 			effectTarget = Owner;
 		}
-
+		if (effectTarget.IsDead)
+		{
+			return;
+		}
 		effectTarget.Health.IncreaseValue(Owner, HealAmountPerTick);
 	}
 }

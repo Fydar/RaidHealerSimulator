@@ -38,6 +38,10 @@ public class Game : MonoBehaviour
 	public CanvasGroup GameOverDialogue;
 	private bool Restart = false;
 
+	public static bool IsGameOver = false;
+	public static bool IsGameWon = false;
+	public static bool IsGameLost = false;
+
 	private void Awake()
 	{
 		Instance = this;
@@ -45,6 +49,9 @@ public class Game : MonoBehaviour
 
 	private IEnumerator Start()
 	{
+		IsGameOver = false;
+		IsGameWon = false;
+		IsGameLost = false;
 		ChatFader.gameObject.SetActive(false);
 		GameOverDialogue.gameObject.SetActive(false);
 		InputDialogue.gameObject.SetActive(false);
@@ -167,10 +174,14 @@ public class Game : MonoBehaviour
 			}
 		}
 
-		while (PlayerParty.IsAnyAlive || EnemyParty.Leader.IsDead)
+		while (PlayerParty.IsAnyAlive && !EnemyParty.Leader.IsDead)
 		{
 			yield return null;
 		}
+		IsGameOver = true;
+
+		IsGameWon = PlayerParty.IsAnyAlive;
+		IsGameLost = !IsGameWon;
 
 		yield return new WaitForSeconds(1.5f);
 

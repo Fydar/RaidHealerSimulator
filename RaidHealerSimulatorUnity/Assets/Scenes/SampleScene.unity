@@ -679,6 +679,8 @@ MonoBehaviour:
   Encounters: []
   LowHealthFlame: {fileID: 11400000, guid: b3e55b62ffba63941a2717e65cb8f5ce, type: 2}
   RevivePleaseFlame: {fileID: 11400000, guid: 4cb8d4a3595fd7f409cf39d974ff7ee7, type: 2}
+  WonSpeach: {fileID: 11400000, guid: c6da54ff25f4b404983222d6247374f0, type: 2}
+  LostSpeach: {fileID: 11400000, guid: eb9d16b9150a36342826b98955ff874a, type: 2}
 --- !u!1 &117383703
 GameObject:
   m_ObjectHideFlags: 0
@@ -2098,6 +2100,8 @@ MonoBehaviour:
   Encounters: []
   LowHealthFlame: {fileID: 11400000, guid: b3e55b62ffba63941a2717e65cb8f5ce, type: 2}
   RevivePleaseFlame: {fileID: 11400000, guid: 4cb8d4a3595fd7f409cf39d974ff7ee7, type: 2}
+  WonSpeach: {fileID: 11400000, guid: c6da54ff25f4b404983222d6247374f0, type: 2}
+  LostSpeach: {fileID: 11400000, guid: eb9d16b9150a36342826b98955ff874a, type: 2}
 --- !u!1001 &679902966
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3424,6 +3428,8 @@ MonoBehaviour:
   Encounters: []
   LowHealthFlame: {fileID: 11400000, guid: b3e55b62ffba63941a2717e65cb8f5ce, type: 2}
   RevivePleaseFlame: {fileID: 11400000, guid: 4cb8d4a3595fd7f409cf39d974ff7ee7, type: 2}
+  WonSpeach: {fileID: 11400000, guid: c6da54ff25f4b404983222d6247374f0, type: 2}
+  LostSpeach: {fileID: 11400000, guid: eb9d16b9150a36342826b98955ff874a, type: 2}
 --- !u!1 &1188813848
 GameObject:
   m_ObjectHideFlags: 0
@@ -4031,6 +4037,8 @@ MonoBehaviour:
   Encounters: []
   LowHealthFlame: {fileID: 11400000, guid: b3e55b62ffba63941a2717e65cb8f5ce, type: 2}
   RevivePleaseFlame: {fileID: 0}
+  WonSpeach: {fileID: 0}
+  LostSpeach: {fileID: 0}
 --- !u!114 &1377667702
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4067,6 +4075,7 @@ MonoBehaviour:
   Abilities:
   - id: 0
   - id: 1
+  - id: 2
   GlobalCooldownTime: 1
   GlobalCooldownPercent: 0
   references:
@@ -4079,16 +4088,27 @@ MonoBehaviour:
         Level: 1
         Cooldown: 2
         WarmupTime: 4
-        DamageAmount: 120
+        DamageAmount: 135
     00000001:
       type: {class: AoEAttack, ns: , asm: Assembly-CSharp}
       data:
         Name: Ground Slam
         Icon: {fileID: 21300000, guid: da80c0219facd1f4d8b218d47733e68c, type: 3}
         Level: 1
-        Cooldown: 10
-        WarmupTime: 4
-        DamageAmount: 80
+        Cooldown: 8
+        WarmupTime: 5
+        DamageAmount: 95
+    00000002:
+      type: {class: ContinuousAttackAbility, ns: , asm: Assembly-CSharp}
+      data:
+        Name: Lashes
+        Icon: {fileID: 21300000, guid: da80c0219facd1f4d8b218d47733e68c, type: 3}
+        Level: 0
+        Cooldown: 20
+        WarmupTime: 3
+        BeamTicks: 16
+        TimePerTick: 0.1
+        DamageAmountPerTick: 14
 --- !u!1001 &1409600815
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4338,7 +4358,7 @@ PrefabInstance:
     - target: {fileID: 224846910496464136, guid: c6434f4487a4f5743b3f5454e4c4d557,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -222
+      value: -220.77643
       objectReference: {fileID: 0}
     - target: {fileID: 224846910496464136, guid: c6434f4487a4f5743b3f5454e4c4d557,
         type: 3}
@@ -4681,19 +4701,19 @@ MonoBehaviour:
         Name: Sweet Herbs
         Icon: {fileID: 21300000, guid: 8aceb9e22fd25b54ab003ebd32e71252, type: 3}
         Level: 1
-        Cooldown: 1
+        Cooldown: 0
         WarmupTime: 0.4
-        HealAmount: 20
+        HealAmount: 18
         IsRevive: 0
     00000001:
-      type: {class: BasicHealAbility, ns: , asm: Assembly-CSharp}
+      type: {class: AoEHealAbility, ns: , asm: Assembly-CSharp}
       data:
-        Name: AoE Heal
+        Name: Aroma
         Icon: {fileID: 21300000, guid: 0e08a6220ac34f94188a0ab9e50e7452, type: 3}
         Level: 1
-        Cooldown: 1
-        WarmupTime: 4
-        HealAmount: 20
+        Cooldown: 0.75
+        WarmupTime: 0.75
+        HealAmount: 10
         IsRevive: 0
     00000002:
       type: {class: BasicHealAbility, ns: , asm: Assembly-CSharp}
@@ -4724,7 +4744,7 @@ MonoBehaviour:
         Level: 1
         Cooldown: 10
         WarmupTime: 2
-        HealAmount: 50
+        HealAmount: 45
         IsRevive: 0
     00000005:
       type: {class: BasicHealAbility, ns: , asm: Assembly-CSharp}
@@ -4732,8 +4752,8 @@ MonoBehaviour:
         Name: Revive
         Icon: {fileID: 21300000, guid: ef6f238c4a35a4249bb35e6364b22d68, type: 3}
         Level: 1
-        Cooldown: 20
-        WarmupTime: 4
+        Cooldown: 18
+        WarmupTime: 3.5
         HealAmount: 80
         IsRevive: 1
 --- !u!114 &1451279398
