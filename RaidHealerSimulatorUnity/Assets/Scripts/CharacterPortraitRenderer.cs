@@ -12,6 +12,7 @@ public class CharacterPortraitRenderer : MonoBehaviour
 	[Space]
 	public ResourceBar Health;
 	public ResourceBar Mana;
+	public ActivityRenderer ActivityRenderer;
 
 	[Space]
 	public Character Target;
@@ -21,6 +22,10 @@ public class CharacterPortraitRenderer : MonoBehaviour
 	public float ScaleLerp = 12.0f;
 	public float UnselectedScale = 1.0f;
 	public float SelectedScale = 1.0f;
+
+	[Space]
+	public Image Selection;
+	public float SelectionFadeLerp;
 
 	private void Start()
 	{
@@ -39,6 +44,14 @@ public class CharacterPortraitRenderer : MonoBehaviour
 				: UnselectedScale;
 			ScaleTarget.localScale = Vector3.Lerp(ScaleTarget.localScale, Vector3.one * target, Time.deltaTime * ScaleLerp);
 		}
+		if (Selection != null)
+		{
+			var cur = Selection.color;
+			var target = Character.PlayerSelected == Target
+				? new Color(cur.r, cur.g, cur.b, 1.0f)
+				: new Color(cur.r, cur.g, cur.b, 0.0f);
+			Selection.color = Color.Lerp(Selection.color, target, Time.deltaTime * SelectionFadeLerp);
+		}
 	}
 
 	public void SetTarget(Character target)
@@ -54,6 +67,11 @@ public class CharacterPortraitRenderer : MonoBehaviour
 		if (Name != null)
 		{
 			Name.text = target.DisplayName;
+		}
+
+		if (ActivityRenderer != null)
+		{
+			ActivityRenderer.SetTarget(target);
 		}
 	}
 
