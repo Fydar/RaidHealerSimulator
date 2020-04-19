@@ -8,10 +8,12 @@ public class HotbarSlot : MonoBehaviour
 {
 	public Image Faded;
 	public Image Main;
+	public Text SlotId;
 
 	[Space]
 	public Color MainReady = new Color(1.0f, 1.0f, 1.0f);
 	public Color MainNotReady = new Color(0.5f, 0.5f, 0.5f);
+	public Color CantUseColour = new Color(0.5f, 0.5f, 0.5f);
 	public float MainColourFade = 1.0f;
 
 	private Ability ability;
@@ -23,11 +25,19 @@ public class HotbarSlot : MonoBehaviour
 		Main.fillAmount = percent;
 
 		var mainTargetColor = ability.Ready ? MainReady : MainNotReady;
+		if (ability.Owner.IsDead || !ability.IsValidTarget(ability.Owner.SelectedTarget))
+		{
+			mainTargetColor = CantUseColour;
+		}
+
 		Main.color = Color.Lerp(Main.color, mainTargetColor, Time.deltaTime * MainColourFade);
 
-		if (binding != KeyCode.None && Input.GetKeyDown(binding))
+		if (ChatInput.Instance != null && !ChatInput.Instance.Field.isFocused)
 		{
-			UiClick();
+			if (binding != KeyCode.None && Input.GetKeyDown(binding))
+			{
+				UiClick();
+			}
 		}
 	}
 
@@ -38,11 +48,14 @@ public class HotbarSlot : MonoBehaviour
 
 		Faded.sprite = ability.Icon;
 		Main.sprite = ability.Icon;
+		SlotId.text = binding.ToString().Replace("Alpha", "");
 	}
 
 	public void UiClick()
 	{
-		if (ability.Ready)
+		if (!ability.Owner.IsDead
+			&& ability.Ready
+			&& ability.IsValidTarget(ability.Owner.SelectedTarget))
 		{
 			if (ability.Owner.CurrentAbility != null)
 			{

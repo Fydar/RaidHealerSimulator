@@ -4,6 +4,8 @@ using UnityEngine;
 [Serializable]
 public class CharacterResource
 {
+	[NonSerialized] public Character Owner;
+
 	[SerializeField] private int currentValue = 100;
 
 	[SerializeField] private int maxValue = 100;
@@ -20,7 +22,7 @@ public class CharacterResource
 	public int CurrentValue => currentValue;
 	public int MaxValue => maxValue;
 
-	public event Action OnValueChanged;
+	public event Action<Character, int> OnValueChanged;
 
 	public void Tick()
 	{
@@ -40,12 +42,12 @@ public class CharacterResource
 				{
 					currentValue = maxValue;
 				}
-				OnValueChanged?.Invoke();
+				OnValueChanged?.Invoke(Owner, resourcesPerRegen);
 			}
 		}
 	}
 
-	public void ReduceValue(int amount)
+	public void ReduceValue(Character dealer, int amount)
 	{
 		currentValue -= amount;
 		if (currentValue <= 0)
@@ -53,10 +55,10 @@ public class CharacterResource
 			currentValue = 0;
 		}
 		currentDelay = regenDelay;
-		OnValueChanged?.Invoke();
+		OnValueChanged?.Invoke(dealer, -amount);
 	}
 
-	public void IncreaseValue(int amount)
+	public void IncreaseValue(Character dealer, int amount)
 	{
 		if (currentValue == maxValue)
 		{
@@ -67,7 +69,7 @@ public class CharacterResource
 		{
 			currentValue = maxValue;
 		}
-		OnValueChanged?.Invoke();
+		OnValueChanged?.Invoke(dealer, amount);
 	}
 
 	public bool CanConsume(int amount)

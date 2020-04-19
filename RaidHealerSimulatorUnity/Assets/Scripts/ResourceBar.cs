@@ -37,10 +37,10 @@ public class ResourceBar : MonoBehaviour
 
 		resource.OnValueChanged += UpdateBars;
 
-		UpdateBars();
+		UpdateBars(null, 0);
 	}
 
-	private void UpdateBars()
+	private void UpdateBars(Character character, int damage)
 	{
 		float value = resource.CurrentValue;
 		float max = resource.MaxValue;
