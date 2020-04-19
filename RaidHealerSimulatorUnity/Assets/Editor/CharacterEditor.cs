@@ -26,6 +26,14 @@ public class CharacterEditor : Editor
 		{
 			addMenu.ShowAsContext();
 		}
+
+		if (GUILayout.Button("Sort"))
+		{
+			character.Abilities.Sort((lhs, rhs) =>
+			{
+				return ((BasicAbility)lhs).Cooldown.CompareTo(((BasicAbility)rhs).Cooldown);
+			});
+		}
 	}
 
 	private void Reload()

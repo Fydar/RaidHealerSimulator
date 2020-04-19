@@ -19,6 +19,8 @@ public class AiController : MonoBehaviour
 
 	public NameGenerator LowHealthFlame;
 	public NameGenerator RevivePleaseFlame;
+	public NameGenerator WonSpeach;
+	public NameGenerator LostSpeach;
 
 	private void Awake()
 	{
@@ -41,7 +43,7 @@ public class AiController : MonoBehaviour
 
 	private IEnumerator ReviveFlamingSubroutine()
 	{
-		while (true)
+		while (!Game.IsGameOver)
 		{
 			if (character.IsDead)
 			{
@@ -54,7 +56,7 @@ public class AiController : MonoBehaviour
 
 	private IEnumerator HealMeFlamingSubroutine()
 	{
-		while(true)
+		while (!Game.IsGameOver)
 		{
 			float percent = character.Health.CurrentValue / (float)character.Health.MaxValue;
 			if (percent < 0.3f)
@@ -62,8 +64,27 @@ public class AiController : MonoBehaviour
 				Chat.Instance.Log($"<color=#23459C>{character.DisplayName}:</color> {LowHealthFlame.GetRandomName()}");
 			}
 
-			yield return new WaitForSeconds(UnityEngine.Random.Range(3, 22));
+			yield return new WaitForSeconds(UnityEngine.Random.Range(4, 16));
 		}
+		if (WonSpeach == null)
+		{
+			yield break;
+		}
+		for (int i = 0; i < UnityEngine.Random.Range(1, 3); i++)
+		{
+			if (Game.IsGameWon)
+			{
+				Chat.Instance.Log($"<color=#23459C>{character.DisplayName}:</color> {WonSpeach.GetRandomName()}");
+			}
+			else
+			{
+				Chat.Instance.Log($"<color=#23459C>{character.DisplayName}:</color> {LostSpeach.GetRandomName()}");
+			}
+			yield return new WaitForSeconds(UnityEngine.Random.Range(4, 8));
+		}
+		yield return new WaitForSeconds(UnityEngine.Random.Range(4, 12));
+
+		Chat.Instance.Log($"<color=#23459C>{character.DisplayName} has left the party:</color>");
 	}
 
 	private void FixedUpdate()
@@ -74,6 +95,7 @@ public class AiController : MonoBehaviour
 		}
 
 		var target = GetCurrentTarget();
+		character.SelectedTarget = target?.Other;
 
 		if (target == null)
 		{
