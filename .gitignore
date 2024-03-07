@@ -29,10 +29,10 @@ ExportedObj/
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
 
-RaidHealerSimulatorUnity/*.sln
-RaidHealerSimulatorUnity/*.csproj
-RaidHealerSimulatorUnity/[Ll]ibrary/
-RaidHealerSimulatorUnity/Assets/AssetStoreTools*
+src/RaidHealerSimulatorUnity/*.sln
+src/RaidHealerSimulatorUnity/*.csproj
+src/RaidHealerSimulatorUnity/[Ll]ibrary/
+src/RaidHealerSimulatorUnity/Assets/AssetStoreTools*
 
 # Builds
 *.apk
