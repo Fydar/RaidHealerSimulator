@@ -13,7 +13,7 @@ public class AiController : MonoBehaviour
 		public Character Other;
 	}
 
-	private Character character;
+	[NonSerialized] public Character character;
 
 	public List<Encounter> Encounters;
 

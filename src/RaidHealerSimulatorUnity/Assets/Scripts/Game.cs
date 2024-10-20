@@ -1,6 +1,8 @@
 ﻿using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
 public class Game : MonoBehaviour
@@ -56,42 +58,10 @@ public class Game : MonoBehaviour
 		GameOverDialogue.gameObject.SetActive(false);
 		InputDialogue.gameObject.SetActive(false);
 
-		EnterNameChannelParty.SetActive(false);
-		EnterNameChannelGlobal.SetActive(true);
+        EnterNameChannelParty.SetActive(true);
+        EnterNameChannelGlobal.SetActive(false);
 
-		FadeToBlack.gameObject.SetActive(true);
-		EnterNameDialogue.gameObject.SetActive(true);
-		FadeToBlack.alpha = 1.0f;
-		EnterNameButton.interactable = false;
-
-		foreach (float time in new TimedLoop(1.0f))
-		{
-			EnterNameDialogue.alpha = time;
-			yield return null;
-		}
-
-		while (!IsValidName(Username))
-		{
-			if (IsValidName(EnterNameField.text))
-			{
-				EnterNameButton.interactable = true;
-			}
-			else
-			{
-				EnterNameButton.interactable = false;
-			}
-			yield return null;
-		}
-
-		PlayerCharacter.DisplayName = Username;
-
-		foreach (float time in new TimedLoop(1.0f))
-		{
-			EnterNameDialogue.alpha = 1.0f - time;
-			yield return null;
-		}
-
-		ChatFader.gameObject.SetActive(true);
+        ChatFader.gameObject.SetActive(true);
 
 		foreach (float time in new TimedLoop(1.0f))
 		{
@@ -99,15 +69,62 @@ public class Game : MonoBehaviour
 			yield return null;
 		}
 
+        Chat.Instance.Log($"<color=#ADB437>You have been added to a party.</color>");
+        Chat.Instance.Log($"<color=#ADB437>Loot distribution has been set to round-robin.</color>");
 
-		RepeatStartTime = Time.time - RepeatWait;
+        yield return new WaitForSeconds(1f);
+
+        var partyLeader = PlayerParty.Members
+			.Where(c => c.TryGetComponent<AiController>(out _))
+			.First();
+
+        Chat.Instance.Log($"<color=#D4AF37>{partyLeader.DisplayName}:</color> nice, we finally got a healer");
+        yield return new WaitForSeconds(0.5f);
+        Chat.Instance.Log($"<color=#D4AF37>{partyLeader.DisplayName}:</color> everyone rdy?");
+        yield return new WaitForSeconds(0.8f);
+
+        foreach (var member in PlayerParty.Members)
+        {
+			if (member == partyLeader)
+			{
+				continue;
+			}
+            var memberAi = member.GetComponent<AiController>();
+            if (memberAi != null)
+            {
+				switch (Random.Range(0, 3))
+                {
+                    case 0:
+                    case 1:
+                        Chat.Instance.Log($"<color=#23459C>{memberAi.character.DisplayName}:</color> r");
+                        break;
+                    case 2:
+                        Chat.Instance.Log($"<color=#23459C>{memberAi.character.DisplayName}:</color> ready");
+                        break;
+                }
+                yield return new WaitForSeconds(Random.Range(0.2f, 0.7f));
+            }
+        }
+
+        yield return new WaitForSeconds(0.8f);
+
+        RepeatStartTime = Time.time - RepeatWait;
 		while (true)
 		{
 			if (RepeatStartTime + RepeatWait < Time.time)
 			{
 				RepeatStartTime = Time.time;
-				Chat.Instance.Log($"<color=#D4AF37>xxKillerZZz:</color> LF 1 Healer for world boss, level 55 minimum");
-			}
+                switch (Random.Range(0, 3))
+                {
+                    case 0:
+                    case 1:
+                        Chat.Instance.Log($"<color=#D4AF37>{partyLeader.DisplayName}:</color> healer, are you rdy?");
+                        break;
+                    case 2:
+                        Chat.Instance.Log($"<color=#D4AF37>{partyLeader.DisplayName}:</color> send 'r' in the chat if yr ready");
+                        break;
+                }
+            }
 			yield return null;
 
 			if (ChatInput.Instance.IsDirty)
@@ -119,43 +136,22 @@ public class Game : MonoBehaviour
 
 		yield return new WaitForSeconds(1.0f);
 
-		InputDialogue.gameObject.SetActive(true);
-		foreach (float time in new TimedLoop(0.2f))
-		{
-			InputDialogue.alpha = time;
-			yield return null;
-		}
+        Chat.Instance.Log($"<color=#23459C>{partyLeader.DisplayName}:</color> ok");
+        yield return new WaitForSeconds(1.0f);
+        switch (Random.Range(0, 3))
+        {
+            case 0:
+                Chat.Instance.Log($"<color=#D4AF37>{partyLeader.DisplayName}:</color> wait for tank to start");
+                break;
+            case 1:
+                Chat.Instance.Log($"<color=#D4AF37>{partyLeader.DisplayName}:</color> tank start it");
+                break;
+            case 2:
+                Chat.Instance.Log($"<color=#D4AF37>{partyLeader.DisplayName}:</color> tank pull please");
+                break;
+        }
 
-		while (!AcceptedInvite)
-		{
-			yield return null;
-		}
-
-		InputDialogue.gameObject.SetActive(true);
-		foreach (float time in new TimedLoop(0.2f))
-		{
-			InputDialogue.alpha = 1.0f - time;
-			yield return null;
-		}
-
-		EnterNameChannelParty.SetActive(true);
-		EnterNameChannelGlobal.SetActive(false);
-
-		Chat.Instance.Log($"<color=#D4AF37>You have been added to a party.</color>");
-		Chat.Instance.Log($"<color=#D4AF37>Loot distribution has been set to round-robin.</color>");
-
-		FadeToBlack.alpha = 0.0f;
-		FadeToBlack.gameObject.SetActive(false);
-
-		yield return new WaitForSeconds(2.5f);
-
-		Chat.Instance.Log($"<color=#23459C>xxKillerZZz:</color> Ayyy we finally have a header, let's go");
-
-		yield return new WaitForSeconds(1.5f);
-
-		Chat.Instance.Log($"<color=#23459C>xxKillerZZz:</color> Tank start it");
-
-		yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.5f);
 
 		foreach (var member in PlayerParty.Members)
 		{
@@ -184,8 +180,6 @@ public class Game : MonoBehaviour
 		IsGameLost = !IsGameWon;
 
 		yield return new WaitForSeconds(1.5f);
-
-		// TODO: Insert code to flame the player
 
 		FadeToBlack.gameObject.SetActive(true);
 		foreach (float time in new TimedLoop(1.0f))
