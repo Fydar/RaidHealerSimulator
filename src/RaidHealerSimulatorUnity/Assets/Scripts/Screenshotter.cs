@@ -95,7 +95,7 @@ public class Screenshotter : MonoBehaviour
 	{
 		static EditorScreenshotter()
 		{
-			SceneView.onSceneGUIDelegate += SceneViewCallback;
+			SceneView.duringSceneGui += SceneViewCallback;
 		}
 
 		private static void SceneViewCallback(SceneView view)
