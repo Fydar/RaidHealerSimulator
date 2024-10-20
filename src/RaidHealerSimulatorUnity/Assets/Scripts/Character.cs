@@ -3,78 +3,75 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-	public static Character PlayerSelected;
-	public Character SelectedTarget;
+    public static Character PlayerSelected;
+    public Character SelectedTarget;
 
-	public PartyGenerator Party;
-	public string DisplayName;
-
-
-	[SerializeField] public int TeamId;
-	[SerializeField] public float ThreatMultiplier;
-
-	[SerializeField] public Sprite ClassIcon;
-	[SerializeField] public Color ClassIconColour;
+    public PartyGenerator Party;
+    public string DisplayName;
 
 
-	[SerializeField] public CharacterResource Health;
-	[SerializeField] public CharacterResource Mana;
+    [SerializeField] public int TeamId;
+    [SerializeField] public float ThreatMultiplier;
 
-	[Space]
-	[SerializeReference] public List<IAbility> Abilities;
+    [SerializeField] public Sprite ClassIcon;
+    [SerializeField] public Color ClassIconColour;
 
-	[Header("Global Cooldown")]
-	[SerializeField] public float GlobalCooldownTime;
-	[SerializeField] public float GlobalCooldownPercent;
-	public bool IsOnGlobalCooldown => GlobalCooldownPercent <= 1.0f;
 
-	public bool IsDead => Health.CurrentValue == 0;
+    [SerializeField] public CharacterResource Health;
+    [SerializeField] public CharacterResource Mana;
 
-	public Ability CurrentAbility;
+    [Space]
+    [SerializeReference] public List<IAbility> Abilities;
 
-	private void Start()
-	{
-		Health.Owner = this;
-		Mana.Owner = this;
+    [Header("Global Cooldown")]
+    [SerializeField] public float GlobalCooldownTime;
+    [SerializeField] public float GlobalCooldownPercent;
+    public bool IsOnGlobalCooldown => GlobalCooldownPercent <= 1.0f;
 
-		foreach (var abilityBase in Abilities)
-		{
-			var ability = (Ability)abilityBase;
+    public bool IsDead => Health.CurrentValue == 0;
 
-			ability.Owner = this;
-		}
+    public Ability CurrentAbility;
 
-		Health.OnValueChanged += OnHealthChanged;
-	}
+    private void Start()
+    {
+        Health.Owner = this;
+        Mana.Owner = this;
 
-	private void OnHealthChanged(Character dealer, int amount)
-	{
-		if (IsDead && amount < 0)
-		{
-			if (CurrentAbility != null)
-			{
-				CurrentAbility.Interupt();
-			}
-			Chat.Instance.Log($"<color=#b53f3f>{DisplayName} have been slaim by {dealer.DisplayName}!</color>");
-		}
-	}
+        foreach (var abilityBase in Abilities)
+        {
+            var ability = (Ability)abilityBase;
 
-	private void FixedUpdate()
-	{
-		Health.Tick();
-		Mana.Tick();
+            ability.Owner = this;
+        }
 
-		foreach (var abilityBase in Abilities)
-		{
-			var ability = (Ability)abilityBase;
-			ability.Tick();
-		}
+        Health.OnValueChanged += OnHealthChanged;
+    }
 
-		GlobalCooldownPercent += Time.fixedDeltaTime / GlobalCooldownTime;
-	}
+    private void OnHealthChanged(Character dealer, int amount)
+    {
+        if (IsDead && amount < 0)
+        {
+            CurrentAbility?.Interupt();
+            Chat.Instance.Log($"<color=#b53f3f>{DisplayName} have been slaim by {dealer.DisplayName}!</color>");
+        }
+    }
 
-	public void TriggerGlobalCooldown()
-	{
-		GlobalCooldownPercent = 0.0f;
-	}
+    private void FixedUpdate()
+    {
+        Health.Tick();
+        Mana.Tick();
+
+        foreach (var abilityBase in Abilities)
+        {
+            var ability = (Ability)abilityBase;
+            ability.Tick();
+        }
+
+        GlobalCooldownPercent += Time.fixedDeltaTime / GlobalCooldownTime;
+    }
+
+    public void TriggerGlobalCooldown()
+    {
+        GlobalCooldownPercent = 0.0f;
+    }
 }

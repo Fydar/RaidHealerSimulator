@@ -5,26 +5,26 @@ using UnityEngine;
 [Serializable]
 public class BasicAttack : BasicAbility
 {
-	[Header("Ability")]
-	public int DamageAmount;
+    [Header("Ability")]
+    public int DamageAmount;
 
-	public override bool IsValidTarget(Character target)
-	{
-		if (target == null)
-		{
-			return false;
-		}
+    public override bool IsValidTarget(Character target)
+    {
+        if (target == null)
+        {
+            return false;
+        }
 
-		return Owner.TeamId != target.TeamId;
-	}
+        return Owner.TeamId != target.TeamId;
+    }
 
-	protected override void OnWarmupComplete()
-	{
-		CurrentTarget.Health.ReduceValue(Owner, DamageAmount);
+    protected override void OnWarmupComplete()
+    {
+        CurrentTarget.Health.ReduceValue(Owner, DamageAmount);
 
-		if (Owner.CurrentAbility == this)
-		{
-			Owner.CurrentAbility = null;
-		}
-	}
+        if (Owner.CurrentAbility == this)
+        {
+            Owner.CurrentAbility = null;
+        }
+    }
 }

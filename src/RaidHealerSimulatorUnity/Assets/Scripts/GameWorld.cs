@@ -1,15 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameWorld : MonoBehaviour
 {
-	public Character Player;
+    public Character Player;
 
-	public PartyGenerator Party;
-
-	public void Start()
-	{
-
-	}
+    public PartyGenerator Party;
 }

@@ -6,78 +6,75 @@ using UnityEngine;
 [CustomEditor(typeof(Character))]
 public class CharacterEditor : Editor
 {
-	private GenericMenu addMenu;
+    private GenericMenu addMenu;
 
-	public override void OnInspectorGUI()
-	{
-		if (addMenu == null)
-		{
-			Reload();
-		}
-		var character = (Character)target;
-		if (character.Abilities == null)
-		{
-			character.Abilities = new List<IAbility>();
-		}
+    public override void OnInspectorGUI()
+    {
+        if (addMenu == null)
+        {
+            Reload();
+        }
+        var character = (Character)target;
+        character.Abilities ??= new List<IAbility>();
 
-		DrawDefaultInspector();
+        DrawDefaultInspector();
 
-		if (EditorGUILayout.DropdownButton(new GUIContent("Add Ability"), FocusType.Keyboard))
-		{
-			addMenu.ShowAsContext();
-		}
+        if (EditorGUILayout.DropdownButton(new GUIContent("Add Ability"), FocusType.Keyboard))
+        {
+            addMenu.ShowAsContext();
+        }
 
-		if (GUILayout.Button("Sort"))
-		{
-			character.Abilities.Sort((lhs, rhs) =>
-			{
-				return ((BasicAbility)lhs).Cooldown.CompareTo(((BasicAbility)rhs).Cooldown);
-			});
-		}
-	}
+        if (GUILayout.Button("Sort"))
+        {
+            character.Abilities.Sort((lhs, rhs) =>
+            {
+                return ((BasicAbility)lhs).Cooldown.CompareTo(((BasicAbility)rhs).Cooldown);
+            });
+        }
+    }
 
-	private void Reload()
-	{
-		addMenu = new GenericMenu();
+    private void Reload()
+    {
+        addMenu = new GenericMenu();
 
-		var assembly = typeof(Character).Assembly;
+        var assembly = typeof(Character).Assembly;
 
-		foreach (var type in assembly.GetTypes())
-		{
-			if (type.IsAbstract)
-			{
-				continue;
-			}
-			if (typeof(Ability).IsAssignableFrom(type))
-			{
-				object[] attributes = type.GetCustomAttributes(typeof(AbilityAttribute), false);
+        foreach (var type in assembly.GetTypes())
+        {
+            if (type.IsAbstract)
+            {
+                continue;
+            }
+            if (typeof(Ability).IsAssignableFrom(type))
+            {
+                object[] attributes = type.GetCustomAttributes(typeof(AbilityAttribute), false);
 
-				string path;
-				if (attributes.Length == 0)
-				{
-					path = type.Namespace;
-				}
-				else
-				{
-					var attribute = (AbilityAttribute)attributes[0];
-					path = attribute.Path;
-				}
+                string path;
+                if (attributes.Length == 0)
+                {
+                    path = type.Namespace;
+                }
+                else
+                {
+                    var attribute = (AbilityAttribute)attributes[0];
+                    path = attribute.Path;
+                }
 
-				addMenu.AddItem(new GUIContent(path), false,
-					AddItem, type);
-			}
-		}
-	}
+                addMenu.AddItem(new GUIContent(path), false,
+                    AddItem, type);
+            }
+        }
+    }
 
-	private void AddItem(object typeObject)
-	{
-		var type = (Type)typeObject;
-		var character = (Character)target;
+    private void AddItem(object typeObject)
+    {
+        var type = (Type)typeObject;
+        var character = (Character)target;
 
-		object newAbility = Activator.CreateInstance(type);
+        object newAbility = Activator.CreateInstance(type);
 
-		character.Abilities.Add((Ability)newAbility);
+        character.Abilities.Add((Ability)newAbility);
 
-		EditorUtility.SetDirty(character);
-	}
+        EditorUtility.SetDirty(character);
+    }
 }

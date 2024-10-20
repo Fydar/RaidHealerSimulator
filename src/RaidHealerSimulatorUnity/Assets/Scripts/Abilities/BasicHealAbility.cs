@@ -5,41 +5,41 @@ using UnityEngine;
 [Serializable]
 public class BasicHealAbility : BasicAbility
 {
-	[Header("Ability")]
-	public int HealAmount;
-	public bool IsRevive;
+    [Header("Ability")]
+    public int HealAmount;
+    public bool IsRevive;
 
-	public override bool IsValidTarget(Character target)
-	{
-		if (target == null)
-		{
-			return !IsRevive;
-		}
+    public override bool IsValidTarget(Character target)
+    {
+        if (target == null)
+        {
+            return !IsRevive;
+        }
 
-		if (target.IsDead != IsRevive)
-		{
-			return true;
-		}
+        if (target.IsDead != IsRevive)
+        {
+            return true;
+        }
 
-		return Owner.TeamId == target.TeamId;
-	}
+        return Owner.TeamId == target.TeamId;
+    }
 
-	protected override void OnWarmupComplete()
-	{
-		var effectTarget = CurrentTarget;
-		if (effectTarget == null)
-		{
-			effectTarget = Owner;
-		}
+    protected override void OnWarmupComplete()
+    {
+        var effectTarget = CurrentTarget;
+        if (effectTarget == null)
+        {
+            effectTarget = Owner;
+        }
 
-		if (effectTarget.IsDead == IsRevive)
-		{
-			effectTarget.Health.IncreaseValue(Owner, HealAmount);
-		}
+        if (effectTarget.IsDead == IsRevive)
+        {
+            effectTarget.Health.IncreaseValue(Owner, HealAmount);
+        }
 
-		if (Owner.CurrentAbility == this)
-		{
-			Owner.CurrentAbility = null;
-		} 
-	}
+        if (Owner.CurrentAbility == this)
+        {
+            Owner.CurrentAbility = null;
+        }
+    }
 }

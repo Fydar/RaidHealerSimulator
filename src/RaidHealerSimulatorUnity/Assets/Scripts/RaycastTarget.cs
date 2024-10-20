@@ -6,45 +6,42 @@ using UnityEditor;
 
 public class RaycastTarget : Graphic
 {
-	public override bool raycastTarget
-	{
-		get
-		{
-			return true;
-		}
-		set
-		{
-		}
-	}
+    public override bool raycastTarget
+    {
+        get => true;
+        set
+        {
+        }
+    }
 
-	public override void SetMaterialDirty()
-	{
-		return;
-	}
+    public override void SetMaterialDirty()
+    {
+        return;
+    }
 
-	public override void SetVerticesDirty()
-	{
-		return;
-	}
+    public override void SetVerticesDirty()
+    {
+        return;
+    }
 
-	protected override void OnPopulateMesh(VertexHelper vh)
-	{
-		vh.Clear();
-		return;
-	}
+    protected override void OnPopulateMesh(VertexHelper vh)
+    {
+        vh.Clear();
+        return;
+    }
 
 #if UNITY_EDITOR
-	[CanEditMultipleObjects, CustomEditor(typeof(RaycastTarget), false)]
-	private class RaycastTargetEditor : Editor
-	{
-		public override void OnInspectorGUI()
-		{
-			serializedObject.Update();
+    [CanEditMultipleObjects, CustomEditor(typeof(RaycastTarget), false)]
+    private class RaycastTargetEditor : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            serializedObject.Update();
 
-			//EditorGUILayout.PropertyField (base.m_Script);
+            //EditorGUILayout.PropertyField (base.m_Script);
 
-			serializedObject.ApplyModifiedProperties();
-		}
-	}
+            serializedObject.ApplyModifiedProperties();
+        }
+    }
 #endif
 }
